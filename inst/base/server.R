@@ -6,12 +6,11 @@ shinyServer(function(input, output, session) {
   library(cgdsr)
   cgds <- CGDS("http://www.cbioportal.org/public-portal/")
   Studies<- getCancerStudies(cgds)
-  updateSelectizeInput(session, 'StudiesID', choices = Studies[,1], selected = "gbm_tcga_pub")
+  updateSelectizeInput(session, 'StudiesID', choices = Studies[,2])
 
   ####### Gene List
         ## get gene list path
-  #listfiles <- list.files(file.path(r_path,"base/data/GeneList"), full.names = TRUE)
-
+  #listfiles <- list.files(file.path(r_path,"base/data/GeneList"), full.names = TRUE
           ## load Gene list in list
    #GeneLists <- lapply(listfiles, function(x) t(unique(read.table(x))))
    #GeneLists <- t(unique(read.table(listfiles[5])))
@@ -24,12 +23,31 @@ shinyServer(function(input, output, session) {
 
   ## get Cases in side bar panel
   output$ui_Cases <- renderUI({
-    selectInput("CasesID", "Cases for selected study",getCaseLists(cgds,input$StudiesID)[,1] )
+
+    for (i in 1: nrow(Studies))
+    {
+      if ((Studies[i,2]) == input$StudiesID)
+
+
+      { res<-i
+      }
+    }
+    selectInput("CasesID", "Cases for selected study",getCaseLists(cgds,Studies[res,1])[,2])
+
   })
 
   ## get Genetic Profiles in side bar panel
   output$ui_GenProfs <- renderUI({
-    selectInput("GenProfID", "Genetic Profiles",getGeneticProfiles(cgds,input$StudiesID)[,1] )
+
+    for (i in 1: nrow(Studies))
+    {
+      if ((Studies[i,2]) == input$StudiesID)
+
+
+      { res<-i
+      }
+    }
+    selectInput("GenProfID", "Genetic Profiles",getGeneticProfiles(cgds,Studies[res,1])[,2] )
   })
 
   # source shared functions

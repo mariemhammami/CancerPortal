@@ -40,7 +40,17 @@ output$ProfDataTable <- DT::renderDataTable({
   #x <<- GeneList
 
   ##### Get Profile Data for selected Case and Genetic Profile
-  dat <- getProfileData(cgds, GeneList, input$GenProfID,input$CasesID)
+for (i in 1: nrow(Studies))
+{
+  if ((Studies[i,2]) == input$StudiesID)
+
+
+  { res<-i
+  }
+}
+caseList <- getCaseLists(cgds,Studies[res,1])
+GenProf <- getGeneticProfiles(cgds,Studies[res,1])
+  dat <- getProfileData(cgds, GeneList, GenProf[res,1],caseList[res,1])
 
 
   if(is.numeric(dat[2,2])){

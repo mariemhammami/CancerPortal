@@ -1,7 +1,11 @@
 output$MutDataTable <- DT::renderDataTable({
   ## check if GenProf is mutation
+  cgds <- CGDS("http://www.cbioportal.org/public-portal/")
+  Studies<- getCancerStudies(cgds)
 
-  if (length(grep("mutation", input$GenProfID))==0){
+
+
+  if (length(grep("Mutations", input$GenProfID))==0){
 
     dat <- as.data.frame("Please select mutations from Genetic Profiles")
 
@@ -12,8 +16,41 @@ output$MutDataTable <- DT::renderDataTable({
   #GeneList <- (r_data[[input$GeneListID]])
 
   ##### Get Mutation Data for selected Case and Genetic Profile
-  #dat <- getProfileData(cgds, GeneList, input$GenProfID,input$CasesID)
-  dat <- getMutationData(cgds,input$CasesID, input$GenProfID, GeneList)
+
+
+
+  #appel des variables <<caselist>> <<genProf>> avec le fichier ProfData.r
+  res <- 1
+  for (i in 1: nrow(Studies))
+  {
+    if ((Studies[i,2]) == input$StudiesID)
+
+
+    { res<-i
+    }
+  }
+  caseList <- getCaseLists(cgds,Studies[res,1])
+  GenProf <- getGeneticProfiles(cgds,Studies[res,1])
+  res2 <- 1
+  for (i in 1: nrow(caseList))
+  {
+    if ((caseList[i,2]) == input$CasesID)
+
+
+    { res2<-i
+    }
+  }
+
+  res3<-1
+  for (i in 1: nrow(GenProf))
+  {
+    if ((GenProf[i,2]) == input$GenProfID)
+
+
+    { res3<-i
+    }
+  }
+  dat <- getMutationData(cgds,caseList[res2,1],GenProf[res3,1], GeneList)
   ## change rownames in the first column
   dat <- as.data.frame(dat %>% add_rownames("Patients"))
   }

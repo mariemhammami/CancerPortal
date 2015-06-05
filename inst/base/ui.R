@@ -15,7 +15,7 @@ shinyUI(navbarPage("Cancer Portal", windowTitle = "Cancer Portal", id = "nav_rad
     #tabPanel("Radiant videos", uiOutput("help_videos")),
     tabPanel("About", uiOutput("help_about"))
   ),
-
+#karim mariem
 
   tags$head(tags$script(src="js/session.js"),
             tags$link(rel="shortcut icon", href="imgs/icon.png"))

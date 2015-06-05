@@ -69,21 +69,58 @@ factorizer <- function(dat) {
 
 ################# Load dataframe (Clinical data, Profile Data, ...) in Datasets
 loadInDatasets <- function(fname, header= TRUE){
+  ###############**********************
+  cgds <- CGDS("http://www.cbioportal.org/public-portal/")
+  Studies<- getCancerStudies(cgds)
+  res <- 1
+  for (i in 1: nrow(Studies))
+  {
+    if ((Studies[i,2]) == input$StudiesID)
 
+
+    { res<-i
+    }
+  }
+  caseList <- getCaseLists(cgds,Studies[res,1])
+  GenProf <- getGeneticProfiles(cgds,Studies[res,1])
+  res2 <- 1
+  for (i in 1: nrow(caseList))
+  {
+    if ((caseList[i,2]) == input$CasesID)
+
+
+    { res2<-i
+    }
+  }
+
+  res3<-1
+  for (i in 1: nrow(GenProf))
+  {
+    if ((GenProf[i,2]) == input$GenProfID)
+
+
+    { res3<-i
+    }
+  }
+
+  ####################*******************************
   objname <- fname
   if(fname=="ProfData"){
   GeneList <- t(unique(read.table(paste0(getwd(),"/data/GeneList/",input$GeneListID,".txt" ,sep=""))))
-  dat <- as.data.frame(getProfileData(cgds, GeneList, input$GenProfID,input$CasesID))
+
+
+
+  dat <- as.data.frame(getProfileData(cgds, GeneList, GenProf[res3,1],caseList[res2,1]))
   r_data[[objname]] <- dat %>% add_rownames("Patients")
 
 
   }else if (fname=="ClinicalData"){
-    dat <- as.data.frame(getClinicalData(cgds, input$CasesID))
+    dat <- as.data.frame(getClinicalData(cgds,caseList[res2,1]))
   r_data[[objname]] <- dat %>% add_rownames("Patients")
 
   }else if (fname=="MutData"){
     GeneList <- t(unique(read.table(paste0(getwd(),"/data/GeneList/",input$GeneListID,".txt" ,sep=""))))
-    dat <- as.data.frame((getMutationData(cgds,input$CasesID, input$GenProfID, GeneList)))
+    dat <- as.data.frame((getMutationData(cgds,caseList[res2,1], GenProf[res3,1], GeneList)))
     r_data[[objname]] <- dat %>% add_rownames("Patients")
   }
   r_data[[paste0(objname,"_descr")]] <- attr(r_data[[objname]], "description")
