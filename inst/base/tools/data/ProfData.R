@@ -50,7 +50,27 @@ for (i in 1: nrow(Studies))
 }
 caseList <- getCaseLists(cgds,Studies[res,1])
 GenProf <- getGeneticProfiles(cgds,Studies[res,1])
-  dat <- getProfileData(cgds, GeneList, GenProf[res,1],caseList[res,1])
+res2 <- 1
+for (i in 1: nrow(caseList))
+{
+  if ((caseList[i,2]) == input$CasesID)
+
+
+  { res2<-i
+  }
+}
+
+res3<-1
+for (i in 1: nrow(GenProf))
+{
+  if ((GenProf[i,2]) == input$GenProfID)
+
+
+  { res3<-i
+  }
+}
+
+  dat <- getProfileData(cgds, GeneList, GenProf[res3,1],caseList[res2,1])
 
 
   if(is.numeric(dat[2,2])){
